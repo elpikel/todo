@@ -24,7 +24,7 @@ defmodule TodoServer do
   end
 
   def handle_call({:entries, date}, _, todo_list) do
-    {:reply, TodoList.entries(state, todo_list), todo_list}
+    {:reply, TodoList.entries(todo_list, date), todo_list}
   end
 
   #{:ok, todo_server} = TodoServer.start
