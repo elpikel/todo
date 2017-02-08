@@ -1,40 +1,33 @@
 defmodule TodoServer do
+  use GenServer
+
+  def init(_) do
+    {:ok, TodoList.new}
+  end
+
+  def handle_cast({:add_entry, entry}, state) do
+    {:noreply, TodoList.add_entry(state, entry)}
+  end
+
+  def handle_call({:entries, date}, _, state) do
+    {:reply, TodoList.entries(state, date), state}
+  end
 
   def start do
-    pid = spawn(fn -> loop(TodoList.new) end)
-    
-    Process.register(pid, :todo_server)
+    GenServer.start(TodoServer, nil)
   end
 
-  def loop(todo_list) do
-    new_todo_list = receive do
-      message ->
-        process_message(todo_list, message)
-    end
-
-    loop(new_todo_list)
+  def add_entry(pid, entry) do
+    GenServer.cast(pid, {:add_entry, entry})
   end
 
-  def add_entry(new_entry) do
-    send(:todo_server, {:add_entry, new_entry})
+  def entries(pid, date) do
+    GenServer.call(pid, {:entries, date})
   end
 
-  def entries(date) do
-    send(:todo_server, {:entries, self, date})
-    
-    receive do
-      {:todo_entries, entries} -> entries
-    after 5000 ->
-      {:error, :timeout}
-    end
-  end
-
-  defp process_message(todo_list, {:add_entry, new_entry}) do
-    TodoList.add_entry(todo_list, new_entry)
-  end
-
-  defp process_message(todo_list, {:entries, caller, date}) do
-    send(caller, {:todo_entries, TodoList.entries(todo_list, date)})
-    todo_list
-  end
+  #{:ok, todo_server} = TodoServer.start
+  #TodoServer.add_entry(todo_server, %{date: {2013, 12, 19}, title: "Dentist"})
+  #TodoServer.add_entry(todo_server, %{date: {2013, 12, 20}, title: "Shopping"})
+  #TodoServer.add_entry(todo_server, %{date: {2013, 12, 19}, title: "Movies"})
+  #TodoServer.entries(todo_server, {2013, 12, 19})
 end
