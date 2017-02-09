@@ -30,5 +30,5 @@ defmodule Todo.Cache do
   #   bobs_list = Todo.Cache.server_process(cache, "bob_list")
   #   Todo.Server.add_entry(bobs_list, %{date: {2013, 12, 19}, title: "Dentist"})
   #   Todo.Server.entries(bobs_list, {2013, 12, 19})
-  #   Todo.Cache.server_process(cache, "Alice's list") |> Todo.Server.entries({2013, 12, 19})
+  #   Todo.Cache.server_process(cache, "alice_list") |> Todo.Server.entries({2013, 12, 19})
 end
