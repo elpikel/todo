@@ -1,9 +1,9 @@
-defmodule TodoServer do
+defmodule Todo.Server do
   use GenServer
 
   # public interface
   def start do
-    GenServer.start(TodoServer, nil)
+    GenServer.start(Todo.Server, nil)
   end
 
   def add_entry(pid, entry) do
